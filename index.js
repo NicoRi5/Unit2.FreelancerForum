@@ -1,62 +1,76 @@
-// === State ===
-// Here, we define variables for the data that our program needs to remember.
-// We call this data "state" because it represents the state of our program.
-// This is also where we define functions to modify the state.
-
-// TODO: Add support for more colors
-const colors = ["red", "green", "blue"];
-const sizes = ["small", "medium", "large"];
-const maxShapes = 10;
-const shapes = [
-  {
-    color: "red",
-    size: "small",
-  },
-  {
-    color: "yellow",
-    size: "small",
-  },
+// arrays of names and occupations
+const names = [
+  "Fernando",
+  "Alexander",
+  "Sarah",
+  "Wanda",
+  "Denis",
+  "Sharon",
+  "Maxwell",
 ];
 
-/** Adds a shape with random properties to the `shapes` array */
-function addShape() {
-  const color = colors[Math.floor(Math.random() * colors.length)];
+const occupations = ["Teacher", "Programmer", "Gardener", "Artist", "Writer"];
 
-  // TODO: Randomize the size of the shape
-  const size = "small";
+const freelancers = [
+  { name: "Wanda", occupation: "Programmer", price: 45 },
+  { name: "Maxwell", occupation: "Gardener", price: 30 },
+];
 
-  shapes.push({ color, size });
-}
+// average starting price function
+const calculateAverage = () => {
+  const total = freelancers.reduce(
+    (sum, freelancer) => sum + freelancer.price,
+    0
+  );
+  return freelancers.length ? (total / freelancers.length).toFixed(2) : 0;
+};
 
-// === Render ===
-// To "render" is to update the DOM to reflect the current state.
-// In this section, we define the functions to render state.
+// displaying and centering the text in a box
+const render = () => {
+  const app = document.querySelector("#app");
+  app.innerHTML = "";
 
-/** Updates the DOM to reflect the current state. */
-function render() {
-  // Render the squares
-  const squareList = document.querySelector("#squares");
-  const squareElements = shapes.map((shape) => {
-    const squareElement = document.createElement("li");
-    squareElement.classList.add(shape.color, shape.size);
-    return squareElement;
+  const container = document.createElement("div");
+  container.style.display = "flex";
+  container.style.flexDirection = "column";
+  container.style.alignItems = "center";
+  container.style.justifyContent = "center";
+  container.style.padding = "20px";
+  container.style.margin = "20px";
+  container.style.textAlign = "center";
+  container.style.borderRadius = "10px";
+  container.style.boxShadow = "0 4px 8px rgba(0,0,0,0.1)";
+
+  const h1 = document.createElement("h1");
+  h1.innerText = "Freelancer Forum";
+  container.append(h1);
+
+  const h2 = document.createElement("h2");
+  h2.innerText = `The average starting price is $${calculateAverage()}`;
+  container.append(h2);
+
+  const fullList = document.createElement("ul");
+  freelancers.forEach((freelancer) => {
+    const listFreelancer = document.createElement("li");
+    listFreelancer.innerText = `${freelancer.name}, ${freelancer.occupation}, $${freelancer.price}`;
+    fullList.appendChild(listFreelancer);
   });
-  squareList.replaceChildren(...squareElements);
+  container.append(fullList);
+  app.append(container);
+};
+render();
 
-  // TODO: Render the circles
-}
+// generate new random freelancers
+const randomizeFreelancer = () => {
+  const newName = names[Math.floor(Math.random() * names.length)];
+  const newOccupation =
+    occupations[Math.floor(Math.random() * occupations.length)];
+  const newPrice = Math.floor(Math.random() * 75) + 1;
+  return { name: newName, occupation: newOccupation, price: newPrice };
+};
 
-// === Script ===
-// In this section, we call the functions that we've defined above.
-
-// `setInterval` will call the callback function every 1000 milliseconds (1 second)
-// and return an interval ID that we can use to stop the interval later.
-// Calling `clearInterval(addShapeIntervalId)` will stop the interval.
-const addShapeIntervalId = setInterval(() => {
-  addShape();
+setInterval(() => {
+  const newFreelancer = randomizeFreelancer();
+  freelancers.push(newFreelancer);
   render();
-
-  // TODO: Stop adding shapes if we've reached the maximum number of shapes
-}, 1000);
-
-render(); // We call this function once to render the initial state
+}, 3000);
